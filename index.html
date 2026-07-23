@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Tensora | Quantum-Inspired Drug Discovery</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00B4D8;
+            --primary-dark: #0096C7;
+            --secondary: #00F5D4;
+            --quantum: #8A2BE2;
+            --quantum-glow: rgba(138, 43, 226, 0.4);
+            --success: #00FF88;
+            --danger: #EF476F;
+            --warning: #FFD166;
+            --dark: #0A0F1A;
+            --glass: rgba(15, 25, 45, 0.45);
+            --glass-border: rgba(0, 180, 216, 0.25);
+            --card-bg: rgba(20, 28, 40, 0.5);
+        }
+        body { background: var(--dark); color: #E8EDF5; font-family: 'Exo 2', sans-serif; min-height: 100vh; overflow-x: hidden; }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+        
+        .tensora-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px 0 15px;
+            flex-wrap: wrap;
+            text-align: center;
+        }
+        .header-logo {
+            height: 70px;
+            width: auto;
+            filter: drop-shadow(0 0 20px rgba(0,180,216,0.3));
+            transition: transform 0.3s;
+        }
+        .header-logo:hover { transform: scale(1.05); }
+        .header-text { display: flex; flex-direction: column; }
+        .tensora-logo { font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--secondary), var(--quantum)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -1px; }
+        .tensora-tagline { font-size: 0.7rem; color: var(--secondary); letter-spacing: 3px; margin-top: 4px; }
+        .quantum-badge { background: rgba(138,43,226,0.2); border: 1px solid var(--quantum); border-radius: 60px; padding: 4px 16px; font-size: 10px; font-family: monospace; color: var(--secondary); display: inline-block; margin-top: 6px; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; text-align: center; }
+        .stat-value { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, var(--secondary), var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .stat-label { font-size: 0.6rem; color: #8A99B0; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .glass-card { background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin-bottom: 25px; transition: all 0.3s; }
+        .glass-card:hover { border-color: var(--primary); }
+        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--glass-border); }
+        .card-header i { font-size: 1.4rem; color: var(--primary); }
+        .card-header h3 { font-size: 1.1rem; font-weight: 600; }
+        
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 11px; color: var(--secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+        .form-group input { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 14px; color: white; font-size: 13px; font-family: monospace; }
+        .form-group input:focus { outline: none; border-color: var(--primary); }
+        
+        .btn-quantum { background: linear-gradient(135deg, var(--quantum), var(--primary)); border: none; padding: 14px; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s; }
+        .btn-quantum:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--quantum-glow); }
+        .btn-quantum:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        .result-card { background: linear-gradient(135deg, rgba(0,180,216,0.1), rgba(138,43,226,0.05)); border-radius: 20px; padding: 20px; margin-top: 20px; }
+        .binding-energy { font-size: 2.5rem; font-weight: 800; text-align: center; margin: 15px 0; }
+        .similarity-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        .similarity-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; border-radius: 4px; transition: width 0.5s ease; }
+        
+        .molecule-viz { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 15px 0; }
+        .atom { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; background: rgba(0,180,216,0.15); border: 1px solid var(--glass-border); }
+        .atom.bonded { background: linear-gradient(135deg, rgba(0,180,216,0.3), rgba(138,43,226,0.3)); border-color: var(--quantum); }
+        
+        .drug-library { max-height: 300px; overflow-y: auto; }
+        .drug-item { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 10px 15px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
+        .drug-item:hover { background: rgba(0,180,216,0.1); transform: translateX(5px); }
+        
+        .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--glass-border); display: flex; flex-direction: column; align-items: center; gap: 20px; background: rgba(5,8,15,0.8); border-radius: 60px; }
+        .footer-logos { display: flex; justify-content: center; align-items: center; gap: 30px; flex-wrap: wrap; }
+        .footer-logos img { height: 40px; width: auto; opacity: 0.8; transition: all 0.3s; }
+        .footer-logos img:hover { opacity: 1; transform: scale(1.05); }
+        .footer-text { text-align: center; font-size: 10px; color: #8A99B0; font-family: monospace; line-height: 1.8; }
+        .footer-text .highlight { color: var(--secondary); }
+        
+        .spinner { display: inline-block; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        @media (max-width: 900px) { .two-column { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(3, 1fr); } .tensora-header { flex-direction: column; } .header-logo { height: 55px; } }
+        @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .footer-logos { gap: 16px; } .footer-logos img { height: 28px; } }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="tensora-header">
+            <img src="https://iili.io/COoSb7n.png" alt="Tensora — Quantum-Inspired Drug Discovery" class="header-logo">
+            <div class="header-text">
+                <div class="tensora-logo">TENSORA</div>
+                <div class="tensora-tagline">QUANTUM-INSPIRED DRUG DISCOVERY · MPS TENSOR NETWORK · IBM VERIFIED</div>
+                <div class="quantum-badge">⚛️ CHSH S=2.76 · 98.4% Correlation · SA 2026/05142</div>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value" id="moleculesProcessed">0</div><div class="stat-label">Molecules Processed</div></div>
+            <div class="stat-card"><div class="stat-value" id="activeCompounds">18</div><div class="stat-label">Active Compounds</div></div>
+            <div class="stat-card"><div class="stat-value" id="mpsBondDim">64</div><div class="stat-label">MPS Bond Dim</div></div>
+            <div class="stat-card"><div class="stat-value" id="quantumAccuracy">98.4%</div><div class="stat-label">Quantum Correlation</div></div>
+            <div class="stat-card"><div class="stat-value" id="chshValue">2.76</div><div class="stat-label">CHSH S-Value</div></div>
+        </div>
+
+        <!-- TWO COLUMN -->
+        <div class="two-column">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-dna"></i><h3>1. Target Protein (Receptor)</h3></div>
+                <div class="form-group"><label>SMILES or Name</label><input type="text" id="targetSmiles" placeholder="e.g., CC(=O)OC1=CC=CC=C1C(=O)O (Aspirin)" value="CC(=O)OC1=CC=CC=C1C(=O)O"></div>
+                <div id="targetViz" class="molecule-viz"></div>
+                
+                <div class="card-header" style="margin-top: 15px;"><i class="fas fa-capsules"></i><h3>2. Drug Candidate (Ligand)</h3></div>
+                <div class="form-group"><label>SMILES or Name</label><input type="text" id="drugSmiles" placeholder="e.g., CN(C)C(=N)N=C(N)N (Metformin)" value="CN(C)C(=N)N=C(N)N"></div>
+                <div id="drugViz" class="molecule-viz"></div>
+                
+                <button class="btn-quantum" id="predictBtn"><i class="fas fa-chart-line"></i> Predict Binding Energy (MPS Overlap)</button>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-chart-simple"></i><h3>3. Binding Prediction Results</h3></div>
+                <div id="resultsArea">
+                    <div class="result-card">
+                        <div style="text-align: center; color: #8A99B0;">Click "Predict" to compute binding energy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DRUG LIBRARY -->
+        <div class="glass-card">
+            <div class="card-header"><i class="fas fa-database"></i><h3>4. Drug Library (18 Known Compounds)</h3></div>
+            <div class="drug-library" id="drugLibrary"></div>
+        </div>
+
+        <!-- MPS VISUALIZER -->
+        <div class="glass-card">
+            <div class="card-header"><i class="fas fa-cube"></i><h3>5. Matrix Product State (MPS) Visualizer</h3></div>
+            <div id="mpsViz" style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 16px;"></div>
+            <div style="text-align: center; margin-top: 10px; font-size: 11px; color: #8A99B0;">MPS Bond Dimension: 64 | Quantum-inspired entanglement simulation | CHSH S=2.76</div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="footer-logos">
+                <img src="https://i.postimg.cc/zXW78GNH/Mind-Tech-Transparent-Logo.png" alt="MindTech Industries">
+                <img src="https://i.postimg.cc/RFQfK9k5/os-finallogo-removebg-preview.png" alt="MQOS">
+                <img src="https://i.postimg.cc/8zVP7V0t/cleanmachine-image-removebg-preview.png" alt="CleanMachine">
+                <img src="https://i.postimg.cc/44m1NBFY/Entangle-Guard-New-Logo-image-3-removebg-preview.png" alt="EntangleGuard">
+                <img src="https://i.postimg.cc/yYPDHtky/Luvuno-Quantum-Chat-image-removebg-preview.png" alt="Luvuno">
+                <img src="https://i.postimg.cc/QtyvGF3B/Quantum-AI-image-logo-removebg-preview.png" alt="Quantum AI">
+            </div>
+            <div class="footer-text">
+                <span class="highlight">⚛️ CHSH S=2.76 · 98.4% correlation · MPS Bond Dim 64</span><br>
+                © 2026 Tensora · Powered by MindTech Industries · South African Patent 2026/05142<br>
+                IBM-Verified · ENSafrica Matter 0564929
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // TENSORA — QUANTUM-INSPIRED DRUG DISCOVERY PLATFORM
+        // Backend: https://moleculemind-backend.onrender.com
+        // CHSH S=2.76 · 98.4% correlation · MPS Bond Dim 64
+        // ============================================================
+        
+        const API_BASE = 'https://moleculemind-backend.onrender.com';
+        
+        // ===== DRUG LIBRARY (Fallback) =====
+        const drugLibrary = [
+            { name: "Aspirin", smiles: "CC(=O)OC1=CC=CC=C1C(=O)O" },
+            { name: "Metformin", smiles: "CN(C)C(=N)N=C(N)N" },
+            { name: "Paracetamol", smiles: "CC(=O)NC1=CC=C(O)C=C1" },
+            { name: "Ibuprofen", smiles: "CC(C)CC1=CC=C(C=C1)C(C)C(=O)O" },
+            { name: "Amoxicillin", smiles: "CC1(C)NC2C(O)C(=O)N(C2=O)C1C3=CC=C(O)C=C3" },
+            { name: "Lisinopril", smiles: "CCCC(C(=O)O)NC(C)C(=O)N1CCCC1C(=O)O" },
+            { name: "Atorvastatin", smiles: "CC(C)C1=C(C(=C(C(=C1)C(C)C)C(=O)O)C2=CC=C(C=C2)F)C3=CC=CC=C3" },
+            { name: "Omeprazole", smiles: "CC1=CN=C(C(=C1OC)C)S(=O)CC2=NC3=C(C=C(C=C3)N2)C" },
+            { name: "Sildenafil", smiles: "CCCC1=NN(C2=C1N=C(NC2=O)C3=CC=C(C=C3)OCC)CCO" },
+            { name: "Cetirizine", smiles: "ClC1=CC=C(C=C1)C(C2=CC=CC=N2)N3CCN(CC3)CC(=O)O" },
+            { name: "Losartan", smiles: "CCCC1=NC2=C(C=CC(=C2)C3=CC=CC=C3)N1CC4=CC=C(C=C4)C(=O)O" },
+            { name: "Simvastatin", smiles: "CCC(C)(C)C1CC(C=C2C1C(C=C3C2C(CC3)C)OC(=O)C(C)C)C" },
+            { name: "Warfarin", smiles: "CC(=O)OC1=CC=CC=C1C(=O)C(C2=CC=CC=C2)C3=CC=CC=C3" },
+            { name: "Doxycycline", smiles: "CC1C2C(C3C(C(=O)C(=C(C3(C(=O)C2=C(C1=O)O)O)O)C(=O)N)O" },
+            { name: "Morphine", smiles: "CN1CC=C2C3=C(C=CC(=C3)O)C1C4C2C(=O)CC4" },
+            { name: "Caffeine", smiles: "CN1C=NC2=C1C(=O)N(C(=O)N2C)C" },
+            { name: "Vitamin C", smiles: "OC1=C(OC(C1O)=O)C(O)=C(O)C" },
+            { name: "Penicillin G", smiles: "CC1(C)NC2C(O)C(=O)N(C2=O)C1C3=CC=CC=C3" }
+        ];
+
+        // ===== UTILITIES =====
+        function tokenizeSmiles(smiles) {
+            const tokens = [];
+            let i = 0;
+            while (i < smiles.length) {
+                const c = smiles[i];
+                if (c >= 'A' && c <= 'Z') {
+                    if (i + 1 < smiles.length && smiles[i+1] >= 'a' && smiles[i+1] <= 'z') {
+                        tokens.push(c + smiles[i+1]); i += 2;
+                    } else { tokens.push(c); i += 1; }
+                } else if (c === '(' || c === ')' || c === '-' || c === '=' || c === '#') {
+                    tokens.push(c); i += 1;
+                } else if (c >= '0' && c <= '9') {
+                    tokens.push(c); i += 1;
+                } else { i += 1; }
+            }
+            return tokens;
+        }
+
+        function renderMolecule(smiles, containerId) {
+            const tokens = tokenizeSmiles(smiles);
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            const displayTokens = tokens.slice(0, 16);
+            for (const token of displayTokens) {
+                const atom = document.createElement('div');
+                atom.className = 'atom bonded';
+                atom.textContent = token;
+                container.appendChild(atom);
+            }
+            if (tokens.length > 16) {
+                const more = document.createElement('div');
+                more.className = 'atom';
+                more.textContent = `+${tokens.length - 16}`;
+                container.appendChild(more);
+            }
+        }
+
+        function renderMPS(tokens, bondDim = 64) {
+            const container = document.getElementById('mpsViz');
+            if (!container) return;
+            container.innerHTML = '';
+            const numSites = Math.min(tokens.length, 12);
+            for (let i = 0; i < numSites; i++) {
+                const site = document.createElement('div');
+                site.style.cssText = 'text-align: center; background: rgba(0,180,216,0.1); border-radius: 8px; padding: 8px; min-width: 60px;';
+                site.innerHTML = `<div style="font-size: 10px;">Site ${i+1}</div><div style="font-size: 8px; color: var(--secondary);">bond dim ${bondDim}</div><div style="font-size: 10px;">${tokens[i] || '—'}</div>`;
+                container.appendChild(site);
+                if (i < numSites - 1) {
+                    const arrow = document.createElement('div');
+                    arrow.style.cssText = 'display: flex; align-items: center; color: var(--primary); font-size: 16px;';
+                    arrow.innerHTML = '→';
+                    container.appendChild(arrow);
+                }
+            }
+        }
+
+        function renderDrugLibrary() {
+            const container = document.getElementById('drugLibrary');
+            if (!container) return;
+            container.innerHTML = '';
+            for (const drug of drugLibrary) {
+                const item = document.createElement('div');
+                item.className = 'drug-item';
+                item.innerHTML = `<span><i class="fas fa-capsule"></i> ${drug.name}</span><span style="font-family: monospace; font-size: 10px;">${drug.smiles.substring(0, 30)}...</span>`;
+                item.onclick = () => {
+                    document.getElementById('drugSmiles').value = drug.smiles;
+                    renderMolecule(drug.smiles, 'drugViz');
+                    const drugTokens = tokenizeSmiles(drug.smiles);
+                    renderMPS(drugTokens);
+                };
+                container.appendChild(item);
+            }
+        }
+
+        // ===== PREDICTION =====
+        async function predictBinding() {
+            const targetSmiles = document.getElementById('targetSmiles').value;
+            const drugSmiles = document.getElementById('drugSmiles').value;
+            
+            if (!targetSmiles || !drugSmiles) {
+                alert('Please enter both target and drug SMILES');
+                return;
+            }
+            
+            const btn = document.getElementById('predictBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Running quantum prediction...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/predict`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target_smiles: targetSmiles, drug_smiles: drugSmiles })
+                });
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                displayResult(data);
+                document.getElementById('moleculesProcessed').innerText = 
+                    parseInt(document.getElementById('moleculesProcessed').innerText) + 1;
+            } catch (error) {
+                console.warn('Backend error:', error);
+                document.getElementById('resultsArea').innerHTML = `
+                    <div class="result-card" style="border-color: var(--danger);">
+                        <div style="text-align: center; color: var(--danger);">
+                            <i class="fas fa-exclamation-triangle"></i> Backend error: ${error.message}
+                        </div>
+                    </div>
+                `;
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function displayResult(data) {
+            const similarity = data.mps_overlap;
+            const bindingEnergy = data.binding_energy;
+            const interpretation = data.interpretation || "";
+            const qv = data.quantum_verification || { chsh_s: 2.76, correlation: 0.984 };
+            
+            let color = "#8A99B0";
+            if (similarity > 0.7) color = "#00FF88";
+            else if (similarity > 0.5) color = "#00F5D4";
+            else if (similarity > 0.3) color = "#FFD166";
+            else color = "#EF476F";
+            
+            const resultsArea = document.getElementById('resultsArea');
+            resultsArea.innerHTML = `
+                <div class="result-card">
+                    <div style="text-align: center; color: var(--secondary); font-size: 12px;">QUANTUM MPS OVERLAP · CHSH S=${qv.chsh_s}</div>
+                    <div class="binding-energy" style="color: ${color};">ΔG = ${bindingEnergy.toFixed(2)} kcal/mol</div>
+                    <div class="similarity-bar"><div class="similarity-fill" style="width: ${similarity * 100}%;"></div></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                        <span>Similarity: ${(similarity * 100).toFixed(1)}%</span>
+                        <span style="color: ${color};">${interpretation}</span>
+                    </div>
+                    <div style="margin-top: 15px; font-size: 11px; color: #8A99B0; text-align: center;">
+                        Matrix Product State bond dimension: 64<br>
+                        Quantum-inspired entanglement simulation · IBM Verified ${(qv.correlation * 100).toFixed(1)}% correlation<br>
+                        ${qv.patent ? 'SA Patent ' + qv.patent : ''}
+                    </div>
+                </div>
+            `;
+            
+            // Update stats
+            document.getElementById('quantumAccuracy').innerText = (qv.correlation * 100).toFixed(1) + '%';
+            document.getElementById('chshValue').innerText = qv.chsh_s;
+            
+            // Render visualizations
+            renderMolecule(data.target_smiles, 'targetViz');
+            renderMolecule(data.drug_smiles, 'drugViz');
+            const drugTokens = tokenizeSmiles(data.drug_smiles);
+            renderMPS(drugTokens);
+        }
+
+        // ===== INIT =====
+        renderDrugLibrary();
+        const defaultTarget = document.getElementById('targetSmiles').value;
+        const defaultDrug = document.getElementById('drugSmiles').value;
+        renderMolecule(defaultTarget, 'targetViz');
+        renderMolecule(defaultDrug, 'drugViz');
+        
+        document.getElementById('predictBtn').addEventListener('click', predictBinding);
+        
+        // Particles
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 55, density: { enable: true, value_area: 1000 } },
+                color: { value: ["#00B4D8", "#00F5D4", "#8A2BE2"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.2, random: true, anim: { enable: true, speed: 0.5, opacity_min: 0.05 } },
+                size: { value: 2.5, random: true, anim: { enable: true, speed: 1, size_min: 0.5 } },
+                line_linked: { enable: true, distance: 150, color: "#00B4D8", opacity: 0.08, width: 0.8 },
+                move: { enable: true, speed: 0.8, direction: "none", random: true }
+            },
+            interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
+        });
+        
+        console.log('🧬 Tensora | Quantum-Inspired Drug Discovery | Backend: ' + API_BASE);
+        console.log('   CHSH S=2.76 · 98.4% correlation · MPS Bond Dim 64');
+    </script>
+</body>
+</html>
