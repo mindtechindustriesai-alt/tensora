@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Tensora | Quantum-Inspired Drug Discovery</title>
     
-    <!-- Inline favicon (fixes 404) -->
+    <!-- Inline favicon (no 404) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
     
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
@@ -42,10 +43,11 @@
             text-align: center;
         }
         .header-logo {
-            height: 70px;
+            height: 90px;
             width: auto;
             filter: drop-shadow(0 0 20px rgba(0,180,216,0.3));
             transition: transform 0.3s;
+            object-fit: contain;
         }
         .header-logo:hover { transform: scale(1.05); }
         .header-text { display: flex; flex-direction: column; }
@@ -102,7 +104,7 @@
         .spinner { display: inline-block; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        @media (max-width: 900px) { .two-column { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(3, 1fr); } .tensora-header { flex-direction: column; } .header-logo { height: 55px; } }
+        @media (max-width: 900px) { .two-column { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(3, 1fr); } .tensora-header { flex-direction: column; } .header-logo { height: 70px; } }
         @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .footer-logos { gap: 16px; } .footer-logos img { height: 28px; } }
     </style>
 </head>
@@ -111,10 +113,11 @@
     <div class="container">
         <!-- HEADER -->
         <div class="tensora-header">
-            <img src="https://iili.io/COoSb7n.png" 
+            <!-- NEW LOGO from my-images repo with inline SVG fallback -->
+            <img src="https://raw.githubusercontent.com/mindtechindustriesai-alt/my-images/main/Tensora_drug_discovery_logo_design_20261024205935-removebg-preview.png" 
                  alt="Tensora — Quantum-Inspired Drug Discovery" 
                  class="header-logo"
-                 onerror="this.src='https://placehold.co/120x120/00B4D8/white?text=Tensora'">
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 120%22 width=%22200%22 height=%22120%22><text x=%22100%22 y=%2270%22 font-family=%22Exo 2, sans-serif%22 font-size=%2236%22 font-weight=%22900%22 fill=%22%2300B4D8%22 text-anchor=%22middle%22>TENSORA</text><text x=%22100%22 y=%2290%22 font-family=%22Space Mono, monospace%22 font-size=%2210%22 fill=%22%2300F5D4%22 text-anchor=%22middle%22 letter-spacing=%223%22>DRUG DISCOVERY</text></svg>'">
             <div class="header-text">
                 <div class="tensora-logo">TENSORA</div>
                 <div class="tensora-tagline">QUANTUM-INSPIRED DRUG DISCOVERY · MPS TENSOR NETWORK · IBM VERIFIED</div>
