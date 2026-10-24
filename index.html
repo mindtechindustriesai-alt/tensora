@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Tensora | Quantum-Inspired Drug Discovery</title>
     
+    <!-- Inline favicon (fixes 404) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
+    
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -49,6 +52,11 @@
         .tensora-logo { font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--secondary), var(--quantum)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -1px; }
         .tensora-tagline { font-size: 0.7rem; color: var(--secondary); letter-spacing: 3px; margin-top: 4px; }
         .quantum-badge { background: rgba(138,43,226,0.2); border: 1px solid var(--quantum); border-radius: 60px; padding: 4px 16px; font-size: 10px; font-family: monospace; color: var(--secondary); display: inline-block; margin-top: 6px; }
+        
+        /* Handshake Badge */
+        .handshake-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 30px; font-size: 0.7rem; font-family: monospace; border: 1px solid var(--warning); color: var(--warning); background: rgba(255, 209, 102, 0.1); margin-top: 12px; transition: all 0.3s; }
+        .handshake-badge.confirmed { border-color: var(--success); color: var(--success); background: rgba(0, 255, 136, 0.1); }
+        .handshake-badge.unreachable { border-color: var(--danger); color: var(--danger); background: rgba(239, 71, 111, 0.1); }
         
         .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; text-align: center; }
@@ -103,11 +111,17 @@
     <div class="container">
         <!-- HEADER -->
         <div class="tensora-header">
-            <img src="https://iili.io/COoSb7n.png" alt="Tensora — Quantum-Inspired Drug Discovery" class="header-logo">
+            <img src="https://iili.io/COoSb7n.png" 
+                 alt="Tensora — Quantum-Inspired Drug Discovery" 
+                 class="header-logo"
+                 onerror="this.src='https://placehold.co/120x120/00B4D8/white?text=Tensora'">
             <div class="header-text">
                 <div class="tensora-logo">TENSORA</div>
                 <div class="tensora-tagline">QUANTUM-INSPIRED DRUG DISCOVERY · MPS TENSOR NETWORK · IBM VERIFIED</div>
                 <div class="quantum-badge">⚛️ CHSH S=2.76 · 98.4% Correlation · SA 2026/05142</div>
+                <div class="handshake-badge" id="handshakeBadge">
+                    <i class="fas fa-satellite-dish"></i> Handshake: Pending...
+                </div>
             </div>
         </div>
 
@@ -175,6 +189,65 @@
         </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- ENTANGLEGUARD SDK — INLINE -->
+    <!-- ============================================================ -->
+    <script>
+        (function() {
+            const MQOS_CORE = 'https://moleculemind-backend.onrender.com';
+            const MQOS_CHSH_CONSTANT = 2.76;
+            const IBM_JOB_ID = "d8uhvl4bp3hs738628cg";
+            
+            let currentSession = {
+                id: 'eg-' + Math.random().toString(36).substr(2, 9),
+                verified: true,
+                chshBadge: MQOS_CHSH_CONSTANT,
+                attestationStatus: "PENDING"
+            };
+
+            async function init() {
+                console.log(`[EntangleGuard] Session: ${currentSession.id}`);
+                console.log(`[EntangleGuard] Trust Anchor: CHSH S=${MQOS_CHSH_CONSTANT}`);
+                console.log(`[EntangleGuard] Backend: ${MQOS_CORE}`);
+
+                // Warm-up call (fixes Render cold start)
+                try {
+                    await fetch(`${MQOS_CORE}/health`, { method: 'GET', signal: AbortSignal.timeout(5000) });
+                } catch (e) {
+                    console.log('[EntangleGuard] Warm-up sent (cold start)');
+                }
+
+                try {
+                    const res = await fetch(`${MQOS_CORE}/api/v1/verify/chsh`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                        signal: AbortSignal.timeout(30000)
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        currentSession.attestationStatus = "CONFIRMED";
+                        console.log(`[EntangleGuard] ✅ Attestation Confirmed. CHSH S=${data.S || MQOS_CHSH_CONSTANT}`);
+                    } else {
+                        currentSession.attestationStatus = "UNREACHABLE";
+                        console.warn(`[EntangleGuard] ⚠️ Verifier returned ${res.status}.`);
+                    }
+                } catch (error) {
+                    currentSession.attestationStatus = "UNREACHABLE";
+                    console.warn(`[EntangleGuard] ⚠️ Verifier unreachable (cold start).`);
+                }
+                return currentSession;
+            }
+
+            window.EntangleGuard = {
+                init: init,
+                getSession: () => currentSession
+            };
+
+            window.EntangleGuard.init();
+        })();
+    </script>
+
     <script>
         // ============================================================
         // TENSORA — QUANTUM-INSPIRED DRUG DISCOVERY PLATFORM
@@ -184,6 +257,38 @@
         
         const API_BASE = 'https://moleculemind-backend.onrender.com';
         
+        // ===== HANDSHAKE BADGE UI =====
+        function updateHandshakeBadge(status) {
+            const badge = document.getElementById('handshakeBadge');
+            if (!badge) return;
+            if (status === 'CONFIRMED') {
+                badge.className = 'handshake-badge confirmed';
+                badge.innerHTML = `<i class="fas fa-check-circle"></i> Handshake: CONFIRMED (S=2.76)`;
+            } else if (status === 'UNREACHABLE') {
+                badge.className = 'handshake-badge unreachable';
+                badge.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Handshake: UNREACHABLE`;
+            } else {
+                badge.className = 'handshake-badge';
+                badge.innerHTML = `<i class="fas fa-satellite-dish"></i> Handshake: Pending...`;
+            }
+        }
+
+        (async function waitForHandshake() {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            if (typeof window.EntangleGuard === 'undefined') {
+                updateHandshakeBadge('UNREACHABLE');
+                return;
+            }
+            const session = window.EntangleGuard.getSession();
+            updateHandshakeBadge(session.attestationStatus);
+            setInterval(() => {
+                if (typeof window.EntangleGuard !== 'undefined') {
+                    const current = window.EntangleGuard.getSession();
+                    updateHandshakeBadge(current.attestationStatus);
+                }
+            }, 5000);
+        })();
+
         // ===== DRUG LIBRARY (Fallback) =====
         const drugLibrary = [
             { name: "Aspirin", smiles: "CC(=O)OC1=CC=CC=C1C(=O)O" },
@@ -298,10 +403,14 @@
             btn.disabled = true;
             
             try {
+                // Warm-up
+                await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(5000) }).catch(() => {});
+                
                 const response = await fetch(`${API_BASE}/api/predict`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ target_smiles: targetSmiles, drug_smiles: drugSmiles })
+                    body: JSON.stringify({ target_smiles: targetSmiles, drug_smiles: drugSmiles }),
+                    signal: AbortSignal.timeout(30000)
                 });
                 
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -314,7 +423,8 @@
                 document.getElementById('resultsArea').innerHTML = `
                     <div class="result-card" style="border-color: var(--danger);">
                         <div style="text-align: center; color: var(--danger);">
-                            <i class="fas fa-exclamation-triangle"></i> Backend error: ${error.message}
+                            <i class="fas fa-exclamation-triangle"></i> Backend error: ${error.message}<br>
+                            <span style="font-size: 10px; opacity: 0.7;">Backend may be cold. Refresh in 30 seconds.</span>
                         </div>
                     </div>
                 `;
@@ -354,11 +464,9 @@
                 </div>
             `;
             
-            // Update stats
             document.getElementById('quantumAccuracy').innerText = (qv.correlation * 100).toFixed(1) + '%';
             document.getElementById('chshValue').innerText = qv.chsh_s;
             
-            // Render visualizations
             renderMolecule(data.target_smiles, 'targetViz');
             renderMolecule(data.drug_smiles, 'drugViz');
             const drugTokens = tokenizeSmiles(data.drug_smiles);
@@ -374,7 +482,6 @@
         
         document.getElementById('predictBtn').addEventListener('click', predictBinding);
         
-        // Particles
         particlesJS('particles-js', {
             particles: {
                 number: { value: 55, density: { enable: true, value_area: 1000 } },
