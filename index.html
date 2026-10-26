@@ -4,106 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Tensora | Quantum-Inspired Drug Discovery</title>
-    
-    <!-- Inline favicon (no 404) -->
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary: #00B4D8;
-            --primary-dark: #0096C7;
-            --secondary: #00F5D4;
-            --quantum: #8A2BE2;
-            --quantum-glow: rgba(138, 43, 226, 0.4);
-            --success: #00FF88;
-            --danger: #EF476F;
-            --warning: #FFD166;
-            --dark: #0A0F1A;
-            --glass: rgba(15, 25, 45, 0.45);
+            --primary: #00B4D8; --primary-dark: #0096C7; --secondary: #00F5D4;
+            --quantum: #8A2BE2; --quantum-glow: rgba(138, 43, 226, 0.4);
+            --success: #00FF88; --danger: #EF476F; --warning: #FFD166;
+            --dark: #0A0F1A; --glass: rgba(15, 25, 45, 0.45);
             --glass-border: rgba(0, 180, 216, 0.25);
             --card-bg: rgba(20, 28, 40, 0.5);
         }
         body { background: var(--dark); color: #E8EDF5; font-family: 'Exo 2', sans-serif; min-height: 100vh; overflow-x: hidden; }
         #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         .container { max-width: 1400px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
-        
+
         .tensora-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px 0 15px;
-            flex-wrap: wrap;
-            text-align: center;
+            display: flex; align-items: center; justify-content: center;
+            gap: 20px; padding: 20px 0 15px; flex-wrap: wrap; text-align: center;
         }
         .header-logo {
-            height: 90px;
-            width: auto;
-            filter: drop-shadow(0 0 20px rgba(0,180,216,0.3));
-            transition: transform 0.3s;
-            object-fit: contain;
+            height: 90px; width: auto; filter: drop-shadow(0 0 20px rgba(0,180,216,0.3));
+            transition: transform 0.3s; object-fit: contain;
         }
         .header-logo:hover { transform: scale(1.05); }
         .header-text { display: flex; flex-direction: column; }
         .tensora-logo { font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--secondary), var(--quantum)); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -1px; }
         .tensora-tagline { font-size: 0.7rem; color: var(--secondary); letter-spacing: 3px; margin-top: 4px; }
         .quantum-badge { background: rgba(138,43,226,0.2); border: 1px solid var(--quantum); border-radius: 60px; padding: 4px 16px; font-size: 10px; font-family: monospace; color: var(--secondary); display: inline-block; margin-top: 6px; }
-        
-        /* Handshake Badge */
+
         .handshake-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 30px; font-size: 0.7rem; font-family: monospace; border: 1px solid var(--warning); color: var(--warning); background: rgba(255, 209, 102, 0.1); margin-top: 12px; transition: all 0.3s; }
         .handshake-badge.confirmed { border-color: var(--success); color: var(--success); background: rgba(0, 255, 136, 0.1); }
         .handshake-badge.unreachable { border-color: var(--danger); color: var(--danger); background: rgba(239, 71, 111, 0.1); }
-        
+
         .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; text-align: center; }
         .stat-value { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, var(--secondary), var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .stat-label { font-size: 0.6rem; color: #8A99B0; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        
+
         .glass-card { background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin-bottom: 25px; transition: all 0.3s; }
         .glass-card:hover { border-color: var(--primary); }
         .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--glass-border); }
         .card-header i { font-size: 1.4rem; color: var(--primary); }
         .card-header h3 { font-size: 1.1rem; font-weight: 600; }
-        
+
         .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 11px; color: var(--secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
         .form-group input { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 14px; color: white; font-size: 13px; font-family: monospace; }
         .form-group input:focus { outline: none; border-color: var(--primary); }
-        
+
         .btn-quantum { background: linear-gradient(135deg, var(--quantum), var(--primary)); border: none; padding: 14px; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s; }
         .btn-quantum:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--quantum-glow); }
         .btn-quantum:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        
+
         .result-card { background: linear-gradient(135deg, rgba(0,180,216,0.1), rgba(138,43,226,0.05)); border-radius: 20px; padding: 20px; margin-top: 20px; }
         .binding-energy { font-size: 2.5rem; font-weight: 800; text-align: center; margin: 15px 0; }
         .similarity-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 10px 0; }
         .similarity-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; border-radius: 4px; transition: width 0.5s ease; }
-        
+
         .molecule-viz { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 15px 0; }
         .atom { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; background: rgba(0,180,216,0.15); border: 1px solid var(--glass-border); }
         .atom.bonded { background: linear-gradient(135deg, rgba(0,180,216,0.3), rgba(138,43,226,0.3)); border-color: var(--quantum); }
-        
+
         .drug-library { max-height: 300px; overflow-y: auto; }
         .drug-item { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 10px 15px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
         .drug-item:hover { background: rgba(0,180,216,0.1); transform: translateX(5px); }
-        
+
         .footer { margin-top: 40px; padding: 20px 0; border-top: 1px solid var(--glass-border); display: flex; flex-direction: column; align-items: center; gap: 20px; background: rgba(5,8,15,0.8); border-radius: 60px; }
         .footer-logos { display: flex; justify-content: center; align-items: center; gap: 30px; flex-wrap: wrap; }
         .footer-logos img { height: 40px; width: auto; opacity: 0.8; transition: all 0.3s; }
         .footer-logos img:hover { opacity: 1; transform: scale(1.05); }
         .footer-text { text-align: center; font-size: 10px; color: #8A99B0; font-family: monospace; line-height: 1.8; }
         .footer-text .highlight { color: var(--secondary); }
-        
+
         .spinner { display: inline-block; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
+
+        /* CHAT STYLES */
+        .chat-messages { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 15px; margin-bottom: 12px; }
+        .chat-message { padding: 10px 14px; margin-bottom: 10px; border-radius: 18px; max-width: 85%; font-size: 0.9rem; line-height: 1.5; }
+        .chat-message.user { background: var(--primary); margin-left: auto; text-align: right; }
+        .chat-message.ai { background: rgba(255,255,255,0.08); border-left: 2px solid var(--secondary); }
+        .chat-input-group { display: flex; gap: 10px; align-items: center; }
+        .chat-input { flex: 1; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); border-radius: 60px; color: white; font-family: 'Exo 2', sans-serif; }
+        .chat-send { background: var(--primary); border: none; border-radius: 60px; padding: 12px 24px; color: white; cursor: pointer; font-weight: 600; }
+        .status-dot-chat { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+        .status-dot-chat.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .status-dot-chat.offline { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+        .status-dot-chat.loading { background: var(--warning); box-shadow: 0 0 10px var(--warning); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
         @media (max-width: 900px) { .two-column { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(3, 1fr); } .tensora-header { flex-direction: column; } .header-logo { height: 70px; } }
         @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .footer-logos { gap: 16px; } .footer-logos img { height: 28px; } }
     </style>
@@ -113,7 +111,6 @@
     <div class="container">
         <!-- HEADER -->
         <div class="tensora-header">
-            <!-- NEW LOGO from my-images repo with inline SVG fallback -->
             <img src="https://raw.githubusercontent.com/mindtechindustriesai-alt/my-images/main/Tensora_drug_discovery_logo_design_20261024205935-removebg-preview.png" 
                  alt="Tensora — Quantum-Inspired Drug Discovery" 
                  class="header-logo"
@@ -143,11 +140,11 @@
                 <div class="card-header"><i class="fas fa-dna"></i><h3>1. Target Protein (Receptor)</h3></div>
                 <div class="form-group"><label>SMILES or Name</label><input type="text" id="targetSmiles" placeholder="e.g., CC(=O)OC1=CC=CC=C1C(=O)O (Aspirin)" value="CC(=O)OC1=CC=CC=C1C(=O)O"></div>
                 <div id="targetViz" class="molecule-viz"></div>
-                
+
                 <div class="card-header" style="margin-top: 15px;"><i class="fas fa-capsules"></i><h3>2. Drug Candidate (Ligand)</h3></div>
                 <div class="form-group"><label>SMILES or Name</label><input type="text" id="drugSmiles" placeholder="e.g., CN(C)C(=N)N=C(N)N (Metformin)" value="CN(C)C(=N)N=C(N)N"></div>
                 <div id="drugViz" class="molecule-viz"></div>
-                
+
                 <button class="btn-quantum" id="predictBtn"><i class="fas fa-chart-line"></i> Predict Binding Energy (MPS Overlap)</button>
             </div>
 
@@ -158,6 +155,25 @@
                         <div style="text-align: center; color: #8A99B0;">Click "Predict" to compute binding energy</div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- AI CHAT ASSISTANT (LUVUNO) -->
+        <div class="glass-card" style="border-color: var(--quantum);">
+            <div class="card-header">
+                <i class="fas fa-robot" style="color: var(--quantum);"></i>
+                <h3>AI Assistant (Luvuno)</h3>
+                <span style="margin-left: auto; font-size: 0.7rem; display: flex; align-items: center;">
+                    <span class="status-dot-chat online" id="chatStatusDot"></span>
+                    <span id="chatStatusText" style="color: var(--text-secondary);">Online</span>
+                </span>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message ai"><strong>Khensani:</strong> Hello! I'm your AI assistant. Ask me about drug discovery, MPS tensor networks, or binding predictions.</div>
+            </div>
+            <div class="chat-input-group">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Ask about drug discovery...">
+                <button id="chatSendBtn" class="chat-send" onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
 
@@ -199,8 +215,7 @@
         (function() {
             const MQOS_CORE = 'https://moleculemind-backend.onrender.com';
             const MQOS_CHSH_CONSTANT = 2.76;
-            const IBM_JOB_ID = "d8uhvl4bp3hs738628cg";
-            
+
             let currentSession = {
                 id: 'eg-' + Math.random().toString(36).substr(2, 9),
                 verified: true,
@@ -213,7 +228,6 @@
                 console.log(`[EntangleGuard] Trust Anchor: CHSH S=${MQOS_CHSH_CONSTANT}`);
                 console.log(`[EntangleGuard] Backend: ${MQOS_CORE}`);
 
-                // Warm-up call (fixes Render cold start)
                 try {
                     await fetch(`${MQOS_CORE}/health`, { method: 'GET', signal: AbortSignal.timeout(5000) });
                 } catch (e) {
@@ -242,25 +256,17 @@
                 return currentSession;
             }
 
-            window.EntangleGuard = {
-                init: init,
-                getSession: () => currentSession
-            };
-
+            window.EntangleGuard = { init: init, getSession: () => currentSession };
             window.EntangleGuard.init();
         })();
     </script>
 
+    <!-- ============================================================ -->
+    <!-- MAIN APP LOGIC -->
+    <!-- ============================================================ -->
     <script>
-        // ============================================================
-        // TENSORA — QUANTUM-INSPIRED DRUG DISCOVERY PLATFORM
-        // Backend: https://moleculemind-backend.onrender.com
-        // CHSH S=2.76 · 98.4% correlation · MPS Bond Dim 64
-        // ============================================================
-        
         const API_BASE = 'https://moleculemind-backend.onrender.com';
-        
-        // ===== HANDSHAKE BADGE UI =====
+
         function updateHandshakeBadge(status) {
             const badge = document.getElementById('handshakeBadge');
             if (!badge) return;
@@ -292,7 +298,6 @@
             }, 5000);
         })();
 
-        // ===== DRUG LIBRARY (Fallback) =====
         const drugLibrary = [
             { name: "Aspirin", smiles: "CC(=O)OC1=CC=CC=C1C(=O)O" },
             { name: "Metformin", smiles: "CN(C)C(=N)N=C(N)N" },
@@ -314,7 +319,6 @@
             { name: "Penicillin G", smiles: "CC1(C)NC2C(O)C(=O)N(C2=O)C1C3=CC=CC=C3" }
         ];
 
-        // ===== UTILITIES =====
         function tokenizeSmiles(smiles) {
             const tokens = [];
             let i = 0;
@@ -390,36 +394,34 @@
             }
         }
 
-        // ===== PREDICTION =====
         async function predictBinding() {
             const targetSmiles = document.getElementById('targetSmiles').value;
             const drugSmiles = document.getElementById('drugSmiles').value;
-            
+
             if (!targetSmiles || !drugSmiles) {
                 alert('Please enter both target and drug SMILES');
                 return;
             }
-            
+
             const btn = document.getElementById('predictBtn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Running quantum prediction...';
             btn.disabled = true;
-            
+
             try {
-                // Warm-up
                 await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(5000) }).catch(() => {});
-                
+
                 const response = await fetch(`${API_BASE}/api/predict`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ target_smiles: targetSmiles, drug_smiles: drugSmiles }),
                     signal: AbortSignal.timeout(30000)
                 });
-                
+
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 displayResult(data);
-                document.getElementById('moleculesProcessed').innerText = 
+                document.getElementById('moleculesProcessed').innerText =
                     parseInt(document.getElementById('moleculesProcessed').innerText) + 1;
             } catch (error) {
                 console.warn('Backend error:', error);
@@ -442,13 +444,13 @@
             const bindingEnergy = data.binding_energy;
             const interpretation = data.interpretation || "";
             const qv = data.quantum_verification || { chsh_s: 2.76, correlation: 0.984 };
-            
+
             let color = "#8A99B0";
             if (similarity > 0.7) color = "#00FF88";
             else if (similarity > 0.5) color = "#00F5D4";
             else if (similarity > 0.3) color = "#FFD166";
             else color = "#EF476F";
-            
+
             const resultsArea = document.getElementById('resultsArea');
             resultsArea.innerHTML = `
                 <div class="result-card">
@@ -466,15 +468,74 @@
                     </div>
                 </div>
             `;
-            
+
             document.getElementById('quantumAccuracy').innerText = (qv.correlation * 100).toFixed(1) + '%';
             document.getElementById('chshValue').innerText = qv.chsh_s;
-            
+
             renderMolecule(data.target_smiles, 'targetViz');
             renderMolecule(data.drug_smiles, 'drugViz');
             const drugTokens = tokenizeSmiles(data.drug_smiles);
             renderMPS(drugTokens);
         }
+
+        // ============================================================
+        // AI CHAT
+        // ============================================================
+        const chatFallbacks = [
+            "I can help with drug discovery. What target are you investigating?",
+            "Matrix Product State tensor networks are ideal for molecular simulation.",
+            "The CHSH S=2.76 attestation verifies that this prediction is quantum-anchored.",
+            "Binding energy is calculated from the MPS overlap. Let's explore your data.",
+            "I'm here to help with molecular analysis and binding predictions."
+        ];
+        let chatFallbackIndex = 0;
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+            input.value = '';
+            const messages = document.getElementById('chatMessages');
+            messages.innerHTML += `<div class="chat-message user">${msg}</div>`;
+            messages.scrollTop = messages.scrollHeight;
+
+            const typing = document.createElement('div');
+            typing.className = 'chat-message ai';
+            typing.textContent = 'Thinking...';
+            messages.appendChild(typing);
+            messages.scrollTop = messages.scrollHeight;
+
+            const dot = document.getElementById('chatStatusDot');
+            const statusText = document.getElementById('chatStatusText');
+            if (dot) dot.className = 'status-dot-chat loading';
+            if (statusText) statusText.textContent = 'Thinking...';
+
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg, portal: 'tensora' })
+            }).then(r => r.json()).then(data => {
+                typing.remove();
+                if (dot) dot.className = 'status-dot-chat online';
+                if (statusText) statusText.textContent = 'Online';
+                const reply = data.response || data.reply || chatFallbacks[chatFallbackIndex % chatFallbacks.length];
+                chatFallbackIndex++;
+                messages.innerHTML += `<div class="chat-message ai"><strong>Khensani:</strong> ${reply}</div>`;
+                messages.scrollTop = messages.scrollHeight;
+            }).catch(() => {
+                typing.remove();
+                if (dot) dot.className = 'status-dot-chat offline';
+                if (statusText) statusText.textContent = 'Offline';
+                const reply = chatFallbacks[chatFallbackIndex % chatFallbacks.length];
+                chatFallbackIndex++;
+                messages.innerHTML += `<div class="chat-message ai"><strong>Khensani:</strong> ${reply} (Offline mode)</div>`;
+                messages.scrollTop = messages.scrollHeight;
+            });
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        });
 
         // ===== INIT =====
         renderDrugLibrary();
@@ -482,9 +543,9 @@
         const defaultDrug = document.getElementById('drugSmiles').value;
         renderMolecule(defaultTarget, 'targetViz');
         renderMolecule(defaultDrug, 'drugViz');
-        
+
         document.getElementById('predictBtn').addEventListener('click', predictBinding);
-        
+
         particlesJS('particles-js', {
             particles: {
                 number: { value: 55, density: { enable: true, value_area: 1000 } },
@@ -497,7 +558,7 @@
             },
             interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
         });
-        
+
         console.log('🧬 Tensora | Quantum-Inspired Drug Discovery | Backend: ' + API_BASE);
         console.log('   CHSH S=2.76 · 98.4% correlation · MPS Bond Dim 64');
     </script>
